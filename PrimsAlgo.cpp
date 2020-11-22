@@ -80,20 +80,22 @@ public:
 	// bool hasCircuit();  // Needs code, ig Girish can
 	_Edge_ minW(int v, bool visited[])
 	{
-		_Edge_ temp;
-		temp.Weight = INT_MAX;
+		_Edge_ temp(-1,INT_MAX);
 		// int v = 0, vv;
 
 		// for(; v < Vertex; v++)
-		for (auto &iter : E[v])
+		for (auto &iter : E[v]){
+			cout<<"::"<<iter.toVertex+1<<","<<visited[iter.toVertex]<<";";
 			if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
 			{
 				temp = iter;
 				// vv = v;
-			}
+			}}
+		cout<<"#"<<temp.toVertex+1<<"%"<<temp.Weight<<";";
 
 		return temp;
 	}
+	
 };
 
 Graph PrimsAlgo(Graph G)
@@ -133,29 +135,19 @@ Graph PrimsAlgo(Graph G)
 			if(visited[v])
 			{
 				e = G.minW(v, visited);
+				cout<<"visited"<<v;
 				if(minWedge.Weight >= e.Weight)
 				{
 					minWedge = e;
 					v1 = v;
 				}
 			}
-			// e2 = G.minW(v2, visited);
 		}
-		G2.getEdge(v1, minWedge.toVertex, minWedge.Weight);
-		visited[v1] = true;
-		// if (e1.Weight < e2.Weight)
-		// {
-		// 	G2.getEdge(v1, e1.toVertex, e1.Weight);
-		// 	v1 = e1.toVertex;
-		// 	visited[v1] = true;
-		// 	cout<<"### Split occurs"<<v1;
-		// }
-		// else
-		// {
-		// 	G2.getEdge(v2, e2.toVertex, e2.Weight);
-		// 	v2 = e2.toVertex;
-		// 	visited[v2] = true;
-		// }
+		if(minWedge.toVertex != -1)
+		{
+			G2.getEdge(v1, minWedge.toVertex, minWedge.Weight);
+			visited[v1] = true;
+		}
 	}
 
 	return G2;
@@ -164,7 +156,8 @@ Graph PrimsAlgo(Graph G)
 int main()
 {
 
-	int Adj[SIZE][SIZE]={{0,2,0,0},{2,0,1,0},{0,1,0,0},{0,0,0,0}}, i = 0, j = 0, n=4;
+	int Adj[SIZE][SIZE]={{0,28,0,0,0,10,0,0},{28,0,16,0,0,0,14,0},{0,16,0,12,0,0,0,0},{0,0,12,0,22,0,18,0},{0,0,0,22,0,25,24,0},{10,0,0,0,0,25,0,0},{0,14,0,18,24,0,0,99},{0,0,0,0,0,0,99,0}}; 
+	int i = 0, j = 0, n=8;
 	// cin >> n;
 	Graph g(n); // Declaration after input for `n` is got
 	for (; i < n; i++)
@@ -174,7 +167,7 @@ int main()
 			if (Adj[i][j])
 				g.getEdge(i, j, Adj[i][j]);
 		}
-
+	g.printAdj();
 	cout << endl; // For now it just prints no. of components as output
 	PrimsAlgo(g).printAdj();
 
