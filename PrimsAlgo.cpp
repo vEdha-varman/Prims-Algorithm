@@ -85,7 +85,7 @@ public:
 
 		// for(; v < Vertex; v++)
 		for (auto &iter : E[v]){
-			cout<<"::"<<iter.toVertex+1<<","<<visited[iter.toVertex]<<";";
+			cout<<" ::"<<iter.toVertex+1<<","<<visited[iter.toVertex]<<";";
 			if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
 			{
 				temp = iter;
@@ -95,7 +95,23 @@ public:
 
 		return temp;
 	}
-	
+	void printlst()
+	{
+		for(int v=0; v < Vertex; v++){
+			cout<<v+1;
+		for (auto &iter : E[v]){
+			cout<<" ::"<<iter.toVertex+1<<","<<iter.Weight;  //<<visited[iter.toVertex]<<";";
+			// if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
+			// {
+			// 	temp = iter;
+			// 	// vv = v;
+			// }
+			}
+			cout<< "\n";
+		}
+		// cout<<"#"<<temp.toVertex+1<<"%"<<temp.Weight<<";";
+	}
+
 };
 
 Graph PrimsAlgo(Graph G)
@@ -128,14 +144,14 @@ Graph PrimsAlgo(Graph G)
 	G2.getEdge(v1, v2, minWedge.Weight);
 	// cout<<"::"<<v1<<":"<<v2<<";";
 
-	for (int c = 0; c < G.Vertex - 1; c++)
+	for (int c = 0; c < G.Vertex - 2; c++)
 	{
 		for(v=0, minWedge={-1,INT_MAX}; v<G.Vertex; v++)
 		{
 			if(visited[v])
 			{
 				e = G.minW(v, visited);
-				cout<<"visited"<<v;
+				cout<<"visited"<<v+1<<endl;
 				if(minWedge.Weight >= e.Weight)
 				{
 					minWedge = e;
@@ -146,7 +162,8 @@ Graph PrimsAlgo(Graph G)
 		if(minWedge.toVertex != -1)
 		{
 			G2.getEdge(v1, minWedge.toVertex, minWedge.Weight);
-			visited[v1] = true;
+			cout<<minWedge.toVertex+1<<"!";
+			visited[minWedge.toVertex] = true;
 		}
 	}
 
@@ -156,7 +173,7 @@ Graph PrimsAlgo(Graph G)
 int main()
 {
 
-	int Adj[SIZE][SIZE]={{0,28,0,0,0,10,0,0},{28,0,16,0,0,0,14,0},{0,16,0,12,0,0,0,0},{0,0,12,0,22,0,18,0},{0,0,0,22,0,25,24,0},{10,0,0,0,0,25,0,0},{0,14,0,18,24,0,0,99},{0,0,0,0,0,0,99,0}}; 
+	int Adj[SIZE][SIZE]={{0,28,0,0,0,10,0,0},{28,0,16,0,0,0,14,0},{0,16,0,12,0,0,0,0},{0,0,12,0,22,0,18,0},{0,0,0,22,0,25,13,0},{10,0,0,0,25,0,0,0},{0,14,0,18,13,0,0,99},{0,0,0,0,0,0,99,0}}; 
 	int i = 0, j = 0, n=8;
 	// cin >> n;
 	Graph g(n); // Declaration after input for `n` is got
@@ -167,7 +184,7 @@ int main()
 			if (Adj[i][j])
 				g.getEdge(i, j, Adj[i][j]);
 		}
-	g.printAdj();
+	g.printlst();
 	cout << endl; // For now it just prints no. of components as output
 	PrimsAlgo(g).printAdj();
 
