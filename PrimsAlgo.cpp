@@ -2,7 +2,7 @@
 #include <climits>
 #include <vector>
 
-#define SIZE 100
+#define SIZE 10
 
 using namespace std;
 class _Edge_
@@ -78,15 +78,19 @@ public:
 		return k;
 	}
 	// bool hasCircuit();  // Needs code, ig Girish can
-	_Edge_ minW(int v, bool *visited)
+	_Edge_ minW(int v, bool visited[])
 	{
 		_Edge_ temp;
 		temp.Weight = INT_MAX;
+		// int v = 0, vv;
 
+		// for(; v < Vertex; v++)
 		for (auto &iter : E[v])
 			if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
+			{
 				temp = iter;
-		visited[temp.toVertex] = true;
+				// vv = v;
+			}
 
 		return temp;
 	}
@@ -102,8 +106,8 @@ Graph PrimsAlgo(Graph G)
 		return G2;
 	}
 
-	int v, v1, v2;
-	_Edge_ e1, e2, minWedge;
+	int v, v1, v2;  // remove unused var
+	_Edge_ e, minWedge;
 	minWedge.Weight = INT_MAX;
 	bool *visited = new bool[G.Vertex];
 	for (v = 0; v < G.Vertex; v++)
@@ -111,7 +115,7 @@ Graph PrimsAlgo(Graph G)
 
 	for (v = 0; v < G.Vertex; v++)
 		for (auto &iter : G.E[v])
-			if (minWedge.Weight <= iter.Weight)
+			if (minWedge.Weight >= iter.Weight)
 			{
 				minWedge = iter;
 				v1 = v;
@@ -120,23 +124,38 @@ Graph PrimsAlgo(Graph G)
 	visited[v1] = true;
 	visited[v2] = true;
 	G2.getEdge(v1, v2, minWedge.Weight);
-	cout<<"::"<<v1<<":"<<v2<<";";
+	// cout<<"::"<<v1<<":"<<v2<<";";
 
 	for (int c = 0; c < G.Vertex - 1; c++)
 	{
-		e1 = G.minW(v1, visited);
-		e2 = G.minW(v2, visited);
-
-		if (e1.Weight < e2.Weight)
+		for(v=0, minWedge={-1,INT_MAX}; v<G.Vertex; v++)
 		{
-			G2.getEdge(v1, e1.toVertex, e1.Weight);
-			v1 = e1.toVertex;
+			if(visited[v])
+			{
+				e = G.minW(v, visited);
+				if(minWedge.Weight >= e.Weight)
+				{
+					minWedge = e;
+					v1 = v;
+				}
+			}
+			// e2 = G.minW(v2, visited);
 		}
-		else
-		{
-			G2.getEdge(v2, e2.toVertex, e2.Weight);
-			v2 = e2.toVertex;
-		}
+		G2.getEdge(v1, minWedge.toVertex, minWedge.Weight);
+		visited[v1] = true;
+		// if (e1.Weight < e2.Weight)
+		// {
+		// 	G2.getEdge(v1, e1.toVertex, e1.Weight);
+		// 	v1 = e1.toVertex;
+		// 	visited[v1] = true;
+		// 	cout<<"### Split occurs"<<v1;
+		// }
+		// else
+		// {
+		// 	G2.getEdge(v2, e2.toVertex, e2.Weight);
+		// 	v2 = e2.toVertex;
+		// 	visited[v2] = true;
+		// }
 	}
 
 	return G2;
