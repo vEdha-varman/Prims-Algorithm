@@ -77,21 +77,17 @@ public:
 			}
 		return k;
 	}
-	// bool hasCircuit();  // Needs code, ig Girish can
 	_Edge_ minW(int v, bool visited[])
 	{
 		_Edge_ temp(-1,INT_MAX);
-		// int v = 0, vv;
 
-		// for(; v < Vertex; v++)
+		// for a given vertex, we traverse through all vertices
 		for (auto &iter : E[v]){
-			cout<<" ::"<<iter.toVertex+1<<","<<visited[iter.toVertex]<<";";
+			// To find the least weighted vertex leading to an unreached vertex
 			if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
 			{
 				temp = iter;
-				// vv = v;
 			}}
-		cout<<"#"<<temp.toVertex+1<<"%"<<temp.Weight<<";";
 
 		return temp;
 	}
@@ -100,16 +96,10 @@ public:
 		for(int v=0; v < Vertex; v++){
 			cout<<v+1;
 		for (auto &iter : E[v]){
-			cout<<" ::"<<iter.toVertex+1<<","<<iter.Weight;  //<<visited[iter.toVertex]<<";";
-			// if (!visited[iter.toVertex] && temp.Weight >= iter.Weight)
-			// {
-			// 	temp = iter;
-			// 	// vv = v;
-			// }
+			cout<<" ::"<<iter.toVertex+1<<","<<iter.Weight;
 			}
 			cout<< "\n";
 		}
-		// cout<<"#"<<temp.toVertex+1<<"%"<<temp.Weight<<";";
 	}
 
 };
@@ -118,19 +108,21 @@ Graph PrimsAlgo(Graph G)
 {
 	Graph G2(G.Vertex);
 
+	// Disconnected graph case
 	if (G.no_of_Components() != 1)
 	{
 		cout << "\n\nNo Spanning Tree possible for the given Graph\n\n";
 		return G2;
 	}
 
-	int v, v1, v2;  // remove unused var
+	int v, v1, v2;
 	_Edge_ e, minWedge;
 	minWedge.Weight = INT_MAX;
 	bool *visited = new bool[G.Vertex];
 	for (v = 0; v < G.Vertex; v++)
 		visited[v] = false;
 
+	// insert the least weighted edge as the first
 	for (v = 0; v < G.Vertex; v++)
 		for (auto &iter : G.E[v])
 			if (minWedge.Weight >= iter.Weight)
@@ -142,16 +134,17 @@ Graph PrimsAlgo(Graph G)
 	visited[v1] = true;
 	visited[v2] = true;
 	G2.getEdge(v1, v2, minWedge.Weight);
-	// cout<<"::"<<v1<<":"<<v2<<";";
+	G2.getEdge(v2, v1, minWedge.Weight);
 
+	// To pick the rest V-2 edges apart from the first one
 	for (int c = 0; c < G.Vertex - 2; c++)
 	{
+		// To find the minimum weighted edge starting from a reached vertex ending at an unreached vertex
 		for(v=0, minWedge={-1,INT_MAX}; v<G.Vertex; v++)
 		{
 			if(visited[v])
 			{
 				e = G.minW(v, visited);
-				cout<<"visited"<<v+1<<endl;
 				if(minWedge.Weight >= e.Weight)
 				{
 					minWedge = e;
@@ -159,10 +152,11 @@ Graph PrimsAlgo(Graph G)
 				}
 			}
 		}
+		// This case is to avoid addition of default all-unvisited-vetices case
 		if(minWedge.toVertex != -1)
 		{
 			G2.getEdge(v1, minWedge.toVertex, minWedge.Weight);
-			cout<<minWedge.toVertex+1<<"!";
+			G2.getEdge(minWedge.toVertex, v1, minWedge.Weight);
 			visited[minWedge.toVertex] = true;
 		}
 	}
@@ -184,8 +178,10 @@ int main()
 			if (Adj[i][j])
 				g.getEdge(i, j, Adj[i][j]);
 		}
+	cout<< "Given input:: fromVertex: toVertex, Weight:\n";
 	g.printlst();
 	cout << endl; // For now it just prints no. of components as output
+	cout<< "\n\nSpanning tree's Adjacency Matrix:\n";
 	PrimsAlgo(g).printAdj();
 
 	return 0;
